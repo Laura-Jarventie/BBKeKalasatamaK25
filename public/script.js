@@ -68,3 +68,6 @@ function generateRandomBoard(){
         }
     }
 } 
+
+
+//saatiin tehtyä responsivisuus. kirj doc 11.
