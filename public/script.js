@@ -112,3 +112,5 @@ function placeObstacle(board, obstacle, startX, startY){
         board[startX + y][startY + x] = 'W'
     }
 }
+
+//saatiin esteet luotua kentälle. s12
