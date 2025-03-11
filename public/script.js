@@ -45,6 +45,8 @@ function generateRandomBoard(){
 
     generateObstacles(newBoard);
 
+    newBoard[8][6] = "P" //P on player
+
     return  newBoard;
 }
 
@@ -64,6 +66,10 @@ function generateRandomBoard(){
             if (getCell(board, x, y) === 'W'){
                 cell.classList.add('wall'); 
             }
+            else if (getCell(board, x, y) === 'P'){
+                cell.classList.add('player'); 
+            }
+            
 
             gameBoard.appendChild(cell);
 
@@ -101,8 +107,8 @@ function generateObstacles(board){
 
     //käydään läpi valitut paikat ja arvotaan niihin esteet
     positions.forEach(pos => {
-        const randomObstacle = obstacles[Math.floor(Math.random()* obstacles.length)];
-        placeObstacle(board, randomObstacle, pos.startX, pos.startY);
+        const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
+        placeObstacle(board, randomObstacle, pos.startY, pos.startX);
     });
 }
 
@@ -113,4 +119,6 @@ function placeObstacle(board, obstacle, startX, startY){
     }
 }
 
-//saatiin esteet luotua kentälle. s12
+function randomInt(min, max){
+    return Math.floor(Math.random() * (max - min + 1 )) + min
+}
