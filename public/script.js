@@ -66,6 +66,7 @@ function generateRandomBoard(){
             if (getCell(board, x, y) === 'W'){
                 cell.classList.add('wall'); 
             }
+
             else if (getCell(board, x, y) === 'P'){
                 cell.classList.add('player'); 
             }
@@ -97,11 +98,11 @@ function generateObstacles(board){
             { startX: 8, startY: 2 },
             { startX: 4, startY: 8 },
             { startX: 3, startY: 16 },
-            { startX: 10, startY: 10 },
+           // { startX: 10, startY: 10 },
             { startX: 12, startY: 5 },
             { startX: 12, startY: 10 },
             { startX: 16, startY: 10 },
-            { startX: 13, startY: 14 }
+            //{ startX: 13, startY: 14 }
        
     ]
 
