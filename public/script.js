@@ -1,6 +1,7 @@
 let BOARD_SIZE = 20
 let board; //kenttä tallentaan tähän
 const cellSize = calculateCellSize();
+let player;
 
 
 
@@ -13,11 +14,31 @@ return gameBoardSize / BOARD_SIZE;
 
 }
 
+document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowUp':
+        player.move(0, -1)  //liikuta ylöspäin
+        break;
+        case 'ArrowDown':
+        player.move(0, 1)   //liiku alas
+        break;
+        case 'ArrowLeft':
+        player.move(-1, 0)  // liikuta vasemmalle
+        break;
+        case 'ArrowRight':
+        player.move(1,0)   // liiku oikealle
+        break;
+    }
+    event.preventDefault();
+});
+
 function startGame(){
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
 
     board = generateRandomBoard();
+
+    player = new Player(0,0)
 
     drawBoard(board);
 }
@@ -51,6 +72,8 @@ function generateRandomBoard(){
 
     const [playerX, playerY] = randomEmptyPosition(newBoard);
     setCell(newBoard, playerX, playerY, 'P');
+    player.x = playerX;
+    player.y = playerY;
 
     return  newBoard;
 }
@@ -103,11 +126,11 @@ function generateObstacles(board){
             { startX: 8, startY: 2 },
             { startX: 4, startY: 8 },
             { startX: 3, startY: 16 },
-           // { startX: 10, startY: 10 },
+            { startX: 10, startY: 10 },
             { startX: 12, startY: 5 },
             { startX: 12, startY: 10 },
             { startX: 16, startY: 10 },
-            //{ startX: 13, startY: 14 }
+            { startX: 13, startY: 14 }
        
     ]
 
@@ -116,6 +139,7 @@ function generateObstacles(board){
         const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
         placeObstacle(board, randomObstacle, pos.startY, pos.startX);
     });
+    
 }
 
 function placeObstacle(board, obstacle, startX, startY){
@@ -141,3 +165,34 @@ function randomEmptyPosition(board){
     }
 }
 
+class Player {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+
+move(deltaX, deltaY){
+
+    //otetaan talteen pelaajan nykyiset koordinaatit
+    const currentX = player.x
+    const currentY = player.y
+
+    console.log("nykyinen sijainti:")
+    console.log(currentX,currentY);
+
+    //lasketaan uusi sijainti
+    const newX = currentX + deltaX;
+    const newY = currentY + deltaY;
+
+    //päivitä pelaajan sijainti
+    player.x = newX;
+    player.y = newY;
+
+    // päivitetään pelikenttä
+    board[currentY][currentX] = ' '; //tyhjätään vanhapaikka
+    board[newY][newX] = 'P'; // asetetaan pelaaja uuteen paikkaan
+
+    drawBoard(board);
+
+}
+  }
