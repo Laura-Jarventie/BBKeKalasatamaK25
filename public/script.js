@@ -2,6 +2,7 @@ let BOARD_SIZE = 20
 let board; //kenttä tallentaan tähän
 const cellSize = calculateCellSize();
 let player;
+let ghosts = [];
 
 
 
@@ -28,6 +29,18 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowRight':
         player.move(1,0)   // liiku oikealle
         break;
+        case 'w':
+        shootAt(player.x, player.y - 1) // ampuu ylös
+        break;
+        case 's':
+        shootAt(player.x, player.y + 1) // ampuu alas
+        break;
+        case 'a':
+        shootAt(player.x - 1, player.y) // ampuu vasemmalle
+        break;
+        case 'd':
+        shootAt(player.x + 1, player.y) // ampuu oikealle
+        break;
     }
     event.preventDefault();
 });
@@ -35,12 +48,13 @@ document.addEventListener('keydown', (event) => {
 function startGame(){
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
-
-    board = generateRandomBoard();
-
     player = new Player(0,0)
-
+    board = generateRandomBoard();
+    
+   
     drawBoard(board);
+
+
 }
 
 function getCell(board, x, y) {
@@ -74,12 +88,24 @@ function generateRandomBoard(){
     setCell(newBoard, playerX, playerY, 'P');
     player.x = playerX;
     player.y = playerY;
+ 
+
+    ghosts = [];
+    for(let i= 0; i < 5; i++) {
+    const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+    setCell(newBoard, ghostX, ghostY, 'H');
+    ghosts.push(new Ghost(ghostX,ghostY)); // työnnetään haamut listalle
+    console.log(ghosts);
+    }
+
 
     return  newBoard;
 }
 
  function drawBoard(board){
     const gameBoard = document.getElementById('game-board');
+
+    gameBoard.innerHTML = ' ';
 
     //Asetetaan grid-sarakkeet ja rivit dynaamisesti BOARD_SIZEN mukaan
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
@@ -97,6 +123,10 @@ function generateRandomBoard(){
 
             else if (getCell(board, x, y) === 'P'){
                 cell.classList.add('player'); 
+            }
+
+            else if (getCell(board, x, y) === 'H'){
+                cell.classList.add('hornmonster'); 
             }
             
 
@@ -177,12 +207,14 @@ move(deltaX, deltaY){
     const currentX = player.x
     const currentY = player.y
 
-    console.log("nykyinen sijainti:")
-    console.log(currentX,currentY);
+    //console.log("nykyinen sijainti:")
+    //console.log(currentX,currentY);
 
     //lasketaan uusi sijainti
     const newX = currentX + deltaX;
     const newY = currentY + deltaY;
+
+    if (getCell(board, newX, newY) === ' '){
 
     //päivitä pelaajan sijainti
     player.x = newX;
@@ -191,8 +223,21 @@ move(deltaX, deltaY){
     // päivitetään pelikenttä
     board[currentY][currentX] = ' '; //tyhjätään vanhapaikka
     board[newY][newX] = 'P'; // asetetaan pelaaja uuteen paikkaan
+    }
 
     drawBoard(board);
-
 }
   }
+
+  class Ghost {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+}
+
+function shootAt(x,y){
+
+    setCell(board, x, y, 'B');
+    drawBoard(board);
+}

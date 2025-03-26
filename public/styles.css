@@ -85,3 +85,7 @@ button {
     background-size: cover;
 }
 
+.hornmonster{
+    background-image: url('images/hornmonster.png');
+    background-size: cover;
+}
