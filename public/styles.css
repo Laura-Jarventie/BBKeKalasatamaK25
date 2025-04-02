@@ -89,3 +89,19 @@ button {
     background-image: url('images/hornmonster.png');
     background-size: cover;
 }
+
+.bullet {
+    border-radius: 50%;
+    background-color: red;
+    animation: fadeOut 0.5s ease-out;
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
