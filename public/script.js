@@ -51,6 +51,8 @@ function startGame(){
 
     player = new Player(0,0)
     board = generateRandomBoard();
+
+    moveGhosts();
     
     drawBoard(board);
 }
@@ -97,7 +99,8 @@ function generateRandomBoard(){
     }
 
     console.log(ghosts);
-
+    console.log(newBoard);
+    
     return  newBoard;
 }
 
@@ -235,7 +238,7 @@ move(deltaX, deltaY){
 }
   }
 
-  class Ghost {
+class Ghost {
     constructor(x, y) {
       this.x = x;
       this.y = y;
@@ -262,4 +265,46 @@ if (ghosts.length === 0){
 
     setCell(board, x, y, 'B');
     drawBoard(board);
+}
+
+function moveGhosts(){
+  
+    //tallennetaan haamujen vanhat sijainnit
+    const oldGhosts = ghosts.map(ghost => ({ x: ghost.x, y: ghost.y }));
+
+    ghosts.forEach(ghost => {
+
+        // määrittelee kyseiselle haamulle mahdolliset uudet paikat    
+        const possibleNewPositions = [
+            { x: ghost.x, y: ghost.y - 1 }, // Ylös
+            { x: ghost.x, y: ghost.y + 1 }, // Alas
+            { x: ghost.x - 1, y: ghost.y }, // Vasemmalle
+            { x: ghost.x + 1, y: ghost.y }  // Oikealle
+        ];
+
+        //suodatetaan paikat jotka ei ole laudan ulkopuolella ja että ne on tyhjiä
+        const validNewPositions = possibleNewPositions.filter(newPosition =>
+            newPosition.x >= 0 && newPosition.x < BOARD_SIZE &&
+            newPosition.y >= 0 && newPosition.y < BOARD_SIZE &&
+            board[newPosition.y][newPosition.x] === ' ' // Tarkista, että ruutu on tyhjä
+        );
+
+        console.log(validNewPositions);
+
+        if (validNewPositions.length > 0){
+            //valitaan satunnainen uusi paikka mahdollisista paikoista
+            const randomNewPosition = validNewPositions[Math.floor(Math.random() * validNewPositions.length)];
+
+            // päivitetään haamun uusi paikka    
+            ghost.x = randomNewPosition.x;
+            ghost.y = randomNewPosition.y;
+        }
+
+        setCell(board, ghost.x, ghost.y, 'H');
+
+        drawBoard(board);
+
+
+    });
+
 }
