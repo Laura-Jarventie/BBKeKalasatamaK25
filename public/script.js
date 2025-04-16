@@ -3,7 +3,7 @@ let board; //kenttä tallentaan tähän
 const cellSize = calculateCellSize();
 let player;
 let ghosts = [];
-
+let ghostSpeed = 1000;
 
 
 document.getElementById("new-game-btn").addEventListener('click', startGame);
@@ -52,7 +52,7 @@ function startGame(){
     player = new Player(0,0)
     board = generateRandomBoard();
 
-    moveGhosts();
+    setInterval(moveGhosts, ghostSpeed)
     
     drawBoard(board);
 }
@@ -243,6 +243,35 @@ class Ghost {
       this.x = x;
       this.y = y;
     }
+    moveGhostTowardsPlayer(player){
+        let dx = player.x - this.x;
+        let dy = player.y - this.y;
+
+        let moves = [];
+
+        if(Math.abs(dx) > Math.abs(dy)){
+            if(dx > 0)
+                moves.push({ x: this.x + 1, y: this.y}) //oikea
+            else
+                moves.push({ x: this.x - 1, y: this.y})//vasen
+            if(dy > 0)
+                moves.push({ x: this.x, y: this.y + 1})//alas
+            else
+                moves.push({ x: this.x, y: this.y- 1})//ylös
+        }
+        else{
+            if(dy > 0)
+                moves.push({ x: this.x, y: this.y + 1})//alas
+            else
+                moves.push({ x: this.x, y: this.y- 1})//ylös
+            if(dx > 0)
+                moves.push({ x: this.x + 1, y: this.y})//oikea
+            else
+                moves.push({ x: this.x - 1, y: this.y})//vasen
+        }
+
+        return(moves[0])
+    }
 }
 
 function shootAt(x,y){
@@ -274,6 +303,8 @@ function moveGhosts(){
 
     ghosts.forEach(ghost => {
 
+        const newPosition = ghost.moveGhostTowardsPlayer(player)
+        /*
         // määrittelee kyseiselle haamulle mahdolliset uudet paikat    
         const possibleNewPositions = [
             { x: ghost.x, y: ghost.y - 1 }, // Ylös
@@ -299,8 +330,17 @@ function moveGhosts(){
             ghost.x = randomNewPosition.x;
             ghost.y = randomNewPosition.y;
         }
+        */
+
+        // päivitetään haamun uusi paikka    
+        ghost.x = newPosition.x;
+        ghost.y = newPosition.y;
 
         setCell(board, ghost.x, ghost.y, 'H');
+
+        oldGhosts.forEach( ghost => {
+            board[ghost.y][ghost.x] = ' '; // poistetaan vanhan haamun sijainti
+        });
 
         drawBoard(board);
 
