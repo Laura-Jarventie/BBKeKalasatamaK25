@@ -243,7 +243,8 @@ class Ghost {
       this.x = x;
       this.y = y;
     }
-    moveGhostTowardsPlayer(player){
+
+    moveGhostTowardsPlayer(player, board, oldGhosts){
         let dx = player.x - this.x;
         let dy = player.y - this.y;
 
@@ -270,7 +271,18 @@ class Ghost {
                 moves.push({ x: this.x - 1, y: this.y})//vasen
         }
 
-        return(moves[0])
+        for (let move of moves){
+            if(board[move.y][move.x] === ' ' || board[move.y][move.x] === 'P'
+                &&
+            !oldGhosts.some(h => h.x === move.x && h.y === move.y) )
+            {
+                return move;
+            }
+            
+        }
+    
+        return { x: this.x, y: this.y};
+
     }
 }
 
@@ -303,7 +315,8 @@ function moveGhosts(){
 
     ghosts.forEach(ghost => {
 
-        const newPosition = ghost.moveGhostTowardsPlayer(player)
+        const newPosition = ghost.moveGhostTowardsPlayer(player, board, oldGhosts)
+
         /*
         // määrittelee kyseiselle haamulle mahdolliset uudet paikat    
         const possibleNewPositions = [
@@ -341,6 +354,10 @@ function moveGhosts(){
         oldGhosts.forEach( ghost => {
             board[ghost.y][ghost.x] = ' '; // poistetaan vanhan haamun sijainti
         });
+
+        ghosts.forEach( ghost => {
+            board[ghost.y][ghost.x] = 'H'
+        });    //päivitä haamun uusi sijainti
 
         drawBoard(board);
 
